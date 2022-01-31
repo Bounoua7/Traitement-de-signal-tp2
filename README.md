@@ -1,19 +1,19 @@
-# Ts-tp2
+# Ts-
 
 
 
 
-<h1 style="color:#0B615E;  text-align:center; vertical-align: middle; padding:40px 0; margin-top:30px " >Synthèse et analyse spectrale d’une gamme de musique</h1>
+<h1 style="color:#0B615E;  text-align:center; vertical-align: middle; padding:40px 0; margin-top:30px " >TP2- Jeux de mots </br>
+Synthèse et analyse spectrale d'une gamme de musique</h1>
              </br>
 
-<h4 style="background-color:#F6CEF5" > Réalisé par: OUM KOULTHOUME BOUNOUA </h4>
+<h4 style="background-color:#F6CEF5"  id="up-id"> Réalisé par: OUM KOULTHOUME BOUNOUA </h4>
 
 
 ------------
 
-<h4 style="color:#088A85;"> Objectifs 
-  
-</h4>• Comprendre comment manipuler un signal audio avec Matlab, en effectuant 
+<h4 style="color:#088A85;">   Objectifs   </h4>
+• Comprendre comment manipuler un signal audio avec Matlab, en effectuant 
 certaines opérations classiques sur un fichier audio d’une phrase enregistrée via 
 un smartphone.
 </br>
@@ -26,6 +26,8 @@ d'une gamme de musique.
 <h3 style="color:#58ACFA";>
 
 <h4> <a href="#rep-id">  Jeux de mots </a></h4>
+
+<h4> <a href="#synthese-id"> Synthèse et analyse spectrale d’une gamme de musique</a></h4>
 
 </h3>
 </ul>
@@ -184,46 +186,103 @@ https://user-images.githubusercontent.com/86807424/151649466-521c8191-9806-4dff-
 
 
 
-<h5 style="color:#FF8000"> Le code</h5>
+
+   <h3 style="color:#088A85" id="synthese-id" >Synthèse et analyse spectrale d’une gamme de musique</h3>
+<h5 style="color:#FF8000"> Synthèse d’une gamme de musique</h5>
+    
+Les notes de musique produites par un piano peuvent être synthétisées 
+approximativement numériquement. En effet, chaque note peut être considérée 
+comme étant un son pur produit par un signal sinusoïdal. La fréquence de la note 
+« La » est par exemple de 440 Hz. </br>
+1- Créez un programme qui permet de jouer une gamme de musique. La fréquence 
+de chaque note est précisée dans le tableau ci-dessous. Chaque note aura une durée 
+de 1s. La durée de la gamme sera donc de 8s. La fréquence d’échantillonnage fe sera 
+fixée à 8192 Hz.
+
+![ff](https://user-images.githubusercontent.com/86807424/151797471-669f8c1c-0114-43a3-b83e-aaf26ea95c2b.png)
+
+
+```Matlab
+ clear all
+  close all
+  clc
+
+  fe=8192; %La fréquence d’échantillonnage
+  te=1/fe;
+  ts=0:te:1;
+   
+    %La fréquence de chaque note de la gamme
+  Dol=262;
+  Re=294;
+  Mi=330;
+  Fa=349;
+  Sol=392;
+  La=440;
+  Si=494;
+  Do2=523;
+   
+  DOl=sin(2*Dol*pi*ts);
+  RE=sin(2*Re*pi*ts);  
+  MI=sin(2*Mi*pi*ts);
+  FA=sin(2*Fa*pi*ts);
+  SOL=sin(2*Sol*pi*ts);
+  LA=sin(2*La*pi*ts);
+  SI=sin(2*Si*pi*ts); 
+  DO2=sin(2*Do2*pi*ts);
+  lagamme=[DOl RE MI FA SOL LA SI DO2];
+  sound (lagamme, fe ) ;
+```
+ <h5 style="color:#FF8000"> Spectre de la gamme de musique</h5>
+2- Utilisez l’outil graphique d’analyse de signaux signalAnalyzer pour visualiser le 
+spectre de votre gamme. Observez les 8 fréquences contenues dans la gamme et 
+vérifiez leur valeur numérique à l’aide des curseurs.
+
+ ![gfch](https://user-images.githubusercontent.com/86807424/151797521-41038975-8bba-4f3c-9e9f-ffb2ac287cc9.png)
+
+</br>
+3- Tracez le spectrogramme qui permet de visualiser le contenu fréquentiel du signal 
+au cours du temps (comme le fait une partition de musique) mais la précision sur l’axe 
+des fréquences n’est pas suffisante pour relever précisément les 8 fréquences.
+
+![signalAnalyzer](https://user-images.githubusercontent.com/86807424/151797690-909f416b-2c2f-450d-a5c6-f1aa96b59242.png)
+
+
+  <h5 style="color:#FF8000"> Approximation du spectre d’un signal sinusoïdal à temps 
+continu par FFT</h5>
+
+
+</br>
+4- Le spectre d’un signal à temps continu peut être approché par transformée de 
+Fourier discrète (TFD) ou sa version rapide (Fast Fourier Transform (FFT). Afficher le 
+spectre de fréquence de la gamme musicale crée en échelle linéaire, puis avec une 
+échelle en décibels.
+
+![Sdb](https://user-images.githubusercontent.com/86807424/151797877-30f2a436-1dfc-41bc-a46b-037da9969fea.png)
 
 ```Matlab
 
-clear all 
-close all
-clc
-
-fe=50;
-te= 1/50;              %pas de temps 
-t=0:te:10-te;          %intervalle
-N=length(t);           %le nombre de points constituant le signal x(t).
-
+DS=abs(fft(lagamme));
+N=length(lagamme)
 figure(1);
-
-x=sin(2*pi*10*t)+sin(2*pi*20*t);         %le signal périodique x(t)
-subplot(2,3,1);                          %subplot divise la figure et crée des axes à la position spécifiée.
-plot(t,x);                               %plot permet de tracer une fonction
-title('signal périodique');              % titre de la figure
-
-
+plot(DS);
+title('Fft de la gamme');
+k=mag2db(DS);
+figure(2);
+fshift=(-N/2:N/2 -1 )*fe/N;
+plot(fshift,fftshift(k));
+title('');
 
 ```
-
-<h5 style="color:#FF8000">résultat de la figure(1):</h5>
-
+figure1
 
 
+![fig1](https://user-images.githubusercontent.com/86807424/151798060-93bab4b6-a07a-41c8-8812-1ad20861550e.png)
 
+figure2
 
-
-
-
-   <h3 style="color:#088A85" id="analys-id" >Analyse fréquentielle du chant du rorqual bleu</h3>
-
-
-Il existe plusieurs signaux dont l’information est encodée dans des sinusoïdes. Les ondes sonores est un bon exemple. Considérons maintenant des données audios collectées à partir de microphones sous - marins au large de la Californie. On cherche à détecter à travers une analyse de Fourier le contenu fréquentiel d’une onde sonore émise pas un rorqual bleu.
-
+![figure2](https://user-images.githubusercontent.com/86807424/151798013-767eaadc-3e59-4f59-88b8-66a7f53dffde.png)
 
 --------
  
-  
+  <h3> <a href="#up-id"> UP </h3>
   </div>
